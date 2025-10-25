@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上部バーの表示</title>
+  <style>
+    /* ページ全体のスタイル */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* 上部バーのスタイル */
+    .top-bar {
+      position: fixed; /* スクロールしてもバーが画面上に固定される */
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333; /* ダークグレーの背景 */
+      color: white; /* 白色の文字 */
+      text-align: center;
+      padding: 10px 0;
+      z-index: 1000; /* 他の要素より前面に表示 */
+    }
+
+    /* コンテンツ部分のスタイル */
+    .content {
+      padding-top: 50px; /* 上部バーの高さ分だけ下にずらす */
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 上部バー -->
+  <div class="top-bar">
+    これは上部バーです
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="content">
+    <h1>ようこそ！</h1>
+    <p>ページの内容がここに表示されます。</p>
+  </div>
+
+</body>
+</html>
