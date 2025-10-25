@@ -7,24 +7,30 @@
 **NitroCat** is [Scratch](https://scratch.mit.edu) mod by [Cat_makura](https://scratch.mit.edu/users/Cat_makura/)
 <br>You can use [Scratch](https://scratch.mit.edu) editor and [Turbowarp](https://turbowarp.org) extension(comming soon) in offline
 <br>This programm userd HTML,JavaScript,CSS
-
-![Static Badge](https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5&logoColor=red)
-![Static Badge](https://img.shields.io/badge/Javascript/ES15-lightyellow?style=for-the-badge&logo=javascript&logoColor=yellow)
-![Static Badge](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css&logoColor=lightblue)
-<br>Library:Scratch_Emurator_Library
-
-![Static Badge](https://img.shields.io/badge/Scratch__EL.js-green?style=for-the-badge&logo=javascript&logoColor=white)
+> [!NOTE]
+> This programm userd HTML,JavaScript(ES),CSS
+> 
+> ![Static Badge](https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5&logoColor=red)
+> ![Static Badge](https://img.shields.io/badge/Javascript/ES15-lightyellow?style=for-the-badge&logo=javascript&logoColor=yellow)
+> ![Static Badge](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css&logoColor=lightblue)
+> <br>EmurateLibrary:Scratch_Emurator_Library
+> 
+> ![Static Badge](https://img.shields.io/badge/Scratch__EL.js-green?style=for-the-badge&logo=javascript&logoColor=white)
 
 ## How to use
 1. Download 「**NitroCat**-main.zip」 and Unzip that.
 2. put out 「**NitroCat**」folder and put in setting/extension file(comming soon)
 3. Click to open **NitroCat**.html(in **NitroCat** folder)
 4. Let's programming in editor!
-
+> [!CAUTION]
+> If you dounload **NitroCat** Public page?\
+> It's mistake.\
+> (you need to dounload in github repository)
 ## About docs folder
-The index.html and series of file is for publicate **nitrocat** web page.
+The index.html and series of file is for publicate **nitroCat** web page.
 <br>so,exactly the same as **NitroCat** systems.
-
+> [!TIP]
+> The docs folder is compatible with the **NitroCat** folder and can be used instead of **NitroCat** folder.
 ## Recommended environment
 <br>### PC editorMobile editor
 <br>Chrome - 120Chrome for android - 90
@@ -45,6 +51,8 @@ The index.html and series of file is for publicate **nitrocat** web page.
 | Chrome for android | 120 | 2023/12/05 |
 | Sumsung Internet | 120 | 2023/12/14 |
 | Opera for android  | 105 | 2023/11/14 |
+> [!WARNING]
+> The site will work if you use a browser other than the recommended one or an older version than the recommended one, but it may be unstable or some functions may not work.
 ## version history
 ### Beta
 Beta1
