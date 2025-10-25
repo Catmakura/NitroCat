@@ -19,22 +19,25 @@
 4. Let's programming in editor!
 
 ## Recommended environment
-### PC editor
-Chrome - 120
-<br>(2023/12/5)
-<br>Edge   - 120
-<br>(2023/12/14)
-<br>Opera  - 105
-<br>(2023/11/14)
-### Mobile editor
-Chrome for android - 90
-<br>(2021/05/10)
-<br>Opera for android  - 70
-<br>(2022/07/01)
-<br>Sumsung Internet   - 20
-<br>(2023/02/19)
-<br>Android webview    - 90
-<br>(2021/04/14)
+<br>### PC editorMobile editor
+<br>Chrome - 120Chrome for android - 90
+<br>(2023/12/5)(2021/05/10)
+<br>Edge   - 120 Opera for android  - 70 
+<br>(2023/12/14)    (2022/07/01)
+<br>Opera  - 105      Sumsung Internet   - 20
+<br>(2023/11/14)      (2023/02/19)
+<br>                  Android webview    - 90
+<br>                  (2021/04/14)
+| PC editor | バージョン | リリース日|
+| ------ | --- | ---------- |
+| Chrome | 120 | 2023/12/05 |
+| Edge   | 120 | 2023/12/14 |
+| Opera  | 105 | 2023/11/14 |
+| ブラウザ | バージョン | リリース日|
+| ------ | --- | ---------- |
+| Chrome for android | 120 | 2023/12/05 |
+| Sumsung Internet | 120 | 2023/12/14 |
+| Opera for android  | 105 | 2023/11/14 |
 ## version history
 ### Beta
 Beta1
