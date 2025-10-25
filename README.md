@@ -18,6 +18,9 @@
 3. Click to open **NitroCat**.html(in **NitroCat** folder)
 4. Let's programming in editor!
 
+## About docs folder
+The index.html and series of file is for publicate nitrocat web page.so,exactly the same as **NitroCat**systems.
+
 ## Recommended environment
 <br>### PC editorMobile editor
 <br>Chrome - 120Chrome for android - 90
