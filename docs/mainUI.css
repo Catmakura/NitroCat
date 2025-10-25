@@ -1,1 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* 上部バーのスタイル */
+.topbar {
+  position: fixed;         /* 固定位置 */
+  top: 0;                  /* 上端に配置 */
+  left: 0;                 /* 左端に配置 */
+  width: 100%;             /* 幅を画面いっぱいに */
+  background-color: #333;  /* 背景色を暗いグレー */
+  color: white;            /* 文字色を白 */
+  padding: 10px 0;         /* 上下にパディング */
+  z-index: 2000;           /* 他の要素より前面に表示 */
+}
