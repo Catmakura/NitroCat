@@ -20,13 +20,11 @@ padding: 10px 0;         /* 上下にパディング */
 z-index: 2000;           /* 他の要素より前面に表示:2000 */
 }
 .background {
-position: fixed;         /* 固定位置 */
-top: 0;       /* 始点 */
-left: 0;
-width: 100%   /* 終点 */
-height: 100%
-margin: 20px;
-　width: 100%;             /* 幅を画面いっぱいに */
-background-color: #e5f2ff;  /* 背景色:waterblue:#e5f2ff */
-z-index: 1;           /* 他の要素より前面に表示:1 */
+  position: fixed;     /* 固定位置で背景 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;         /* 高さを画面全体に */
+  background-color: #e5f2ff;  /* 背景色:waterblue:#e5f2ff */
+  z-index: -1;          /* 最背面に配置 */
 }
