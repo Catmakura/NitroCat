@@ -20,11 +20,12 @@ body {
   z-index: 2000;           /* 他の要素より前面に表示:2000 */
 }
 .background {
-  position: fixed;         /* 固定位置 */
+  position: absolute;         /* 固定位置 */
   padding-top: 50px;       /* 上部バーの高さ分だけ下げる */
   margin: 20px;
 　width: 100%;             /* 幅を画面いっぱいに */
+  height: 100vh;        /* 高さを画面全体に */
   background-color: #e5f2ff;  /* 背景色:waterblue:#e5f2ff */
-  z-index: 1;           /* 他の要素より前面に表示:1 */
+  z-index: -1;           /* 他の要素より前面に表示:-1 */
 
 }
