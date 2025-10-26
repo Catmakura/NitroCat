@@ -30,6 +30,16 @@ The index.html and series of file is for publicate **nitroCat** web page.
 <br>so,exactly the same as **NitroCat** systems.
 > [!TIP]
 > The docs folder is compatible with the **NitroCat** folder and can be used instead of **NitroCat** folder.
+## Color scheme
+#### topbar
+**accent**\
+oasisgreen:`#5aaa32`\
+nitrored:`#eb5f3c`\
+malinblue:`#3c64c8`\
+**text**\
+purewhite:`#ffffff`
+#### background
+clearblue:`#e5f2ff `
 ## Recommended environment
 <br>### PC editorMobile editor
 <br>Chrome - 120Chrome for android - 90
