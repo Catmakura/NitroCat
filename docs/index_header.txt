@@ -1,1 +1,16 @@
-
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NitroCat is Scratch Mod.they can run scratch in offline and can use Turbowarp extensions(comming soon)">
+<meta name="author" content="Cat_makura" />
+<meta name="copyright" content="2025©Cat_makura" />
+<!-- <meta name="robots" content="noindex,nofollow"> -->
+<!-- <meta http-equiv="refresh" content="5;url=https://github.com/Catmakura"> -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="NitroCat">
+<meta property="og:url" content="https://catmakura.github.io/NitroCat/" />
+<meta name="google" content="notranslate" />
+<meta name="twitter:card" content="Summary Card" />
+<meta name="msapplication-TileColor" content="#fa7846"/> <!-- catred:#fa7846 -->
+<meta property="og:image" content="icon_share.png" />
+<meta name="msapplication-TileImage" content="icon_windows.png" />
+<link rel="apple-touch-icon" href="icon_apple.png">
