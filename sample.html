@@ -2,107 +2,174 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Battery Status API 全機能チェック</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主要Web API デモ (Battery, Geo, WebRTC, Storage, WebGPU)</title>
   <style>
     body {
-      font-family: system-ui, sans-serif;
-      background: #f8f9fa;
+      font-family: "Segoe UI", sans-serif;
+      background: #eef2f7;
+      margin: 30px;
       color: #333;
-      padding: 2rem;
     }
-    #battery-info {
-      background: white;
-      padding: 1.5rem;
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      border-left: 6px solid #4caf50;
+      padding-left: 10px;
+      color: #333;
+    }
+    progress {
+      width: 100%;
+      height: 20px;
+    }
+    video {
+      width: 100%;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      max-width: 500px;
+      background: #000;
     }
-    h1 { color: #0078d7; }
-    .value { font-weight: bold; color: #222; }
-    .charging { color: green; }
-    .discharging { color: red; }
-    .log {
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      background: #f0f0f0;
-      padding: 0.8rem;
-      border-radius: 6px;
-      height: 150px;
-      overflow-y: auto;
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>🔋 Battery Status API 全機能チェック</h1>
-  <div id="battery-info">バッテリー情報を取得中...</div>
-  <div class="log" id="log"></div>
+  <h1>🌐 Web API 総合デモ</h1>
+
+  <!-- Battery API -->
+  <section id="battery-section">
+    <h2>🔋 Battery Status API</h2>
+    <p>状態: <span id="battery-status">読み込み中...</span></p>
+    <p>バッテリー残量: <span id="battery-level">--</span>%</p>
+    <p>充電までの時間: <span id="charging-time">--</span></p>
+    <p>放電までの時間: <span id="discharging-time">--</span></p>
+    <progress id="battery-progress" value="0" max="100"></progress>
+  </section>
+
+  <!-- Geolocation API -->
+  <section id="geo-section">
+    <h2>📍 Geolocation API</h2>
+    <button id="get-location">現在地を取得</button>
+    <p>緯度: <span id="latitude">--</span></p>
+    <p>経度: <span id="longitude">--</span></p>
+    <p id="geo-status"></p>
+  </section>
+
+  <!-- WebRTC API -->
+  <section id="webrtc-section">
+    <h2>🎥 WebRTC API (getUserMedia)</h2>
+    <button id="start-camera">カメラを起動</button>
+    <video id="camera" autoplay playsinline></video>
+    <p id="camera-status"></p>
+  </section>
+
+  <!-- sessionStorage API -->
+  <section id="storage-section">
+    <h2>💾 sessionStorage API</h2>
+    <p>
+      <input type="text" id="storage-input" placeholder="保存するテキストを入力" />
+      <button id="save-storage">保存</button>
+      <button id="load-storage">読み込み</button>
+    </p>
+    <p>保存された値: <span id="storage-output">（なし）</span></p>
+  </section>
+
+  <!-- WebGPU API -->
+  <section id="webgpu-section">
+    <h2>⚙️ WebGPU API</h2>
+    <p id="webgpu-status">チェック中...</p>
+  </section>
 
   <script>
-    function logEvent(msg) {
-      const log = document.getElementById("log");
-      const time = new Date().toLocaleTimeString();
-      log.innerHTML += `[${time}] ${msg}<br>`;
-      log.scrollTop = log.scrollHeight;
+    // --- Battery Status API ---
+    function formatTime(sec) {
+      if (sec === Infinity || sec < 0) return "―";
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      return h > 0 ? `${h}時間${m}分` : `${m}分`;
     }
 
     if ('getBattery' in navigator) {
       navigator.getBattery().then(battery => {
-        const infoDiv = document.getElementById("battery-info");
-
-        function updateBatteryInfo() {
+        const s = id => document.getElementById(id);
+        function update() {
           const level = Math.round(battery.level * 100);
-          const charging = battery.charging;
-          const chargingTime = battery.chargingTime;
-          const dischargingTime = battery.dischargingTime;
-
-          const chargeState = charging ? "⚡ 充電中" : "🔋 バッテリー使用中";
-          const timeText = `
-            充電完了まで: ${
-              chargingTime === Infinity ? "N/A" : (chargingTime / 60).toFixed(1) + " 分"
-            }<br>
-            残り使用時間: ${
-              dischargingTime === Infinity ? "N/A" : (dischargingTime / 60).toFixed(1) + " 分"
-            }
-          `;
-
-          infoDiv.innerHTML = `
-            <div>状態: <span class="value ${charging ? 'charging' : 'discharging'}">${chargeState}</span></div>
-            <div>バッテリー残量: <span class="value">${level}%</span></div>
-            <div>${timeText}</div>
-          `;
+          s('battery-level').textContent = level;
+          s('battery-progress').value = level;
+          s('battery-status').textContent = battery.charging ? "⚡ 充電中" : "🔋 使用中";
+          s('charging-time').textContent = formatTime(battery.chargingTime);
+          s('discharging-time').textContent = formatTime(battery.dischargingTime);
         }
-
-        // 初回表示
-        updateBatteryInfo();
-
-        // 各イベントを監視
-        battery.addEventListener('chargingchange', () => {
-          logEvent(`充電状態が変化しました → ${battery.charging ? "充電開始" : "放電中"}`);
-          updateBatteryInfo();
-        });
-
-        battery.addEventListener('levelchange', () => {
-          logEvent(`バッテリー残量が変化しました → ${Math.round(battery.level * 100)}%`);
-          updateBatteryInfo();
-        });
-
-        battery.addEventListener('chargingtimechange', () => {
-          logEvent(`充電完了までの時間が変化しました → ${battery.chargingTime}s`);
-          updateBatteryInfo();
-        });
-
-        battery.addEventListener('dischargingtimechange', () => {
-          logEvent(`残り使用時間が変化しました → ${battery.dischargingTime}s`);
-          updateBatteryInfo();
-        });
-
-      }).catch(err => {
-        document.getElementById("battery-info").innerHTML =
-          "⚠️ バッテリー情報の取得に失敗しました。<br>" + err;
+        update();
+        ['chargingchange','levelchange','chargingtimechange','dischargingtimechange']
+          .forEach(e => battery.addEventListener(e, update));
       });
     } else {
-      document.getElementById("battery-info").innerHTML =
-        "❌ このブラウザは Battery Status API をサポートしていません。";
+      document.getElementById("battery-section").innerHTML =
+        "<p class='error'>❌ Battery API はこのブラウザで利用できません。</p>";
+    }
+
+    // --- Geolocation API ---
+    document.getElementById("get-location").addEventListener("click", () => {
+      const status = document.getElementById("geo-status");
+      if (!navigator.geolocation) {
+        status.textContent = "❌ Geolocation API はサポートされていません。";
+        return;
+      }
+      status.textContent = "📡 現在地を取得中...";
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          document.getElementById("latitude").textContent = pos.coords.latitude.toFixed(5);
+          document.getElementById("longitude").textContent = pos.coords.longitude.toFixed(5);
+          status.textContent = "✅ 現在地を取得しました。";
+        },
+        err => {
+          status.textContent = `❌ エラー: ${err.message}`;
+        }
+      );
+    });
+
+    // --- WebRTC API (getUserMedia) ---
+    document.getElementById("start-camera").addEventListener("click", async () => {
+      const video = document.getElementById("camera");
+      const status = document.getElementById("camera-status");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        status.textContent = "✅ カメラを起動しました。";
+        status.className = "success";
+      } catch (err) {
+        status.textContent = "❌ カメラにアクセスできません: " + err.message;
+        status.className = "error";
+      }
+    });
+
+    // --- sessionStorage API ---
+    document.getElementById("save-storage").addEventListener("click", () => {
+      const value = document.getElementById("storage-input").value;
+      sessionStorage.setItem("demoText", value);
+      document.getElementById("storage-output").textContent = value || "（なし）";
+    });
+    document.getElementById("load-storage").addEventListener("click", () => {
+      const value = sessionStorage.getItem("demoText") || "（なし）";
+      document.getElementById("storage-output").textContent = value;
+    });
+
+    // --- WebGPU API ---
+    const gpuStatus = document.getElementById("webgpu-status");
+    if (navigator.gpu) {
+      gpuStatus.innerHTML = "✅ WebGPU がサポートされています。";
+    } else {
+      gpuStatus.innerHTML = "❌ このブラウザでは WebGPU は利用できません。";
     }
   </script>
 </body>
