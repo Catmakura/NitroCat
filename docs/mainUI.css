@@ -31,22 +31,14 @@ z-index: 1;           /* 他の要素より前面に表示:2000 */
 }
 
 .bar-button {
-  background-color: transparent;  /* 背景色なし */
   border: none;                   /* 枠線なし */
   padding: 10px 20px;             /* 内側の余白 */
-  font-size: 16px;                /* フォントサイズ */
-  cursor: pointer;               /* ポインタカーソル */
   display: flex;                  /* アイコンとテキストを横並び */
   align-items: center;            /* アイコンとテキストを垂直方向で中央揃え */
   transition: opacity 0.3s;       /* 透明度の変化にトランジションを追加 */
-  z-index: 2;           /* 他の要素より前面に表示:2 */
-}
-
-/* ボタン内のアイコンのスタイル */
-.bar-button .button-icon {
   width: 20px;                    /* アイコンのサイズ */
   height: 20px;                   /* アイコンのサイズ */
-  margin-right: 10px;             /* アイコンとテキストの間に余白 */
+  z-index: 2;           /* 他の要素より前面に表示:2 */
 }
 
 /* ボタンにホバーしたときのスタイル */
