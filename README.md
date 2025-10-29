@@ -4,7 +4,7 @@
 
 
 
-**NitroCat** is [Scratch](https://scratch.mit.edu) mod by [Cat_makura](https://scratch.mit.edu/users/Cat_makura/)
+**NitroCat** is [Scratch](https://scratch.mit.edu) mod by **[Cat_makura](https://scratch.mit.edu/users/Cat_makura/)** and **darekasan**
 <br>You can use [Scratch](https://scratch.mit.edu) editor and [Turbowarp](https://turbowarp.org) extension(comming soon) in offline
 > [!NOTE]
 > This programm userd HTML,JavaScript(ES),CSS
