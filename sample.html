@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>主要Web API + WebGPU レンダリング デモ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web API</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -16,7 +16,7 @@
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     h2 {
       border-left: 6px solid #4caf50;
@@ -39,12 +39,21 @@
       border-radius: 8px;
       background: #111;
     }
-    .error { color: red; font-weight: bold; }
-    .success { color: green; font-weight: bold; }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
-  <h1>🌐 Web API + WebGPU 総合デモ</h1>
+  <h1>🌐 Web API + WebGPU + Notification + Performance 総合デモ</h1>
 
   <!-- Battery API -->
   <section id="battery-section">
@@ -91,10 +100,25 @@
     <p id="webgpu-status">初期化中...</p>
   </section>
 
+  <!-- Notification API -->
+  <section id="notification-section">
+    <h2>🔔 Notification API</h2>
+    <button id="request-notify">通知を許可</button>
+    <button id="send-notify">通知を送信</button>
+    <p id="notify-status">未許可</p>
+  </section>
+
+  <!-- Performance API -->
+  <section id="performance-section">
+    <h2>⏱️ Performance API</h2>
+    <button id="check-performance">ページのパフォーマンスを表示</button>
+    <pre id="perf-output" style="background:#222; color:#0f0; padding:10px; border-radius:8px;"></pre>
+  </section>
+
   <script type="module">
-    // ===============================
-    // Battery Status API
-    // ===============================
+    // ======================================
+    // 🔋 Battery API
+    // ======================================
     function formatTime(sec) {
       if (sec === Infinity || sec < 0) return "―";
       const h = Math.floor(sec / 3600);
@@ -102,29 +126,30 @@
       return h > 0 ? `${h}時間${m}分` : `${m}分`;
     }
 
-    if ('getBattery' in navigator) {
-      navigator.getBattery().then(battery => {
-        const s = id => document.getElementById(id);
+    if ("getBattery" in navigator) {
+      navigator.getBattery().then((battery) => {
+        const s = (id) => document.getElementById(id);
         function update() {
           const level = Math.round(battery.level * 100);
-          s('battery-level').textContent = level;
-          s('battery-progress').value = level;
-          s('battery-status').textContent = battery.charging ? "⚡ 充電中" : "🔋 使用中";
-          s('charging-time').textContent = formatTime(battery.chargingTime);
-          s('discharging-time').textContent = formatTime(battery.dischargingTime);
+          s("battery-level").textContent = level;
+          s("battery-progress").value = level;
+          s("battery-status").textContent = battery.charging ? "⚡ 充電中" : "🔋 使用中";
+          s("charging-time").textContent = formatTime(battery.chargingTime);
+          s("discharging-time").textContent = formatTime(battery.dischargingTime);
         }
         update();
-        ['chargingchange','levelchange','chargingtimechange','dischargingtimechange']
-          .forEach(e => battery.addEventListener(e, update));
+        ["chargingchange", "levelchange", "chargingtimechange", "dischargingtimechange"].forEach((e) =>
+          battery.addEventListener(e, update)
+        );
       });
     } else {
       document.getElementById("battery-section").innerHTML =
         "<p class='error'>❌ Battery API はサポートされていません。</p>";
     }
 
-    // ===============================
-    // Geolocation API
-    // ===============================
+    // ======================================
+    // 📍 Geolocation API
+    // ======================================
     document.getElementById("get-location").addEventListener("click", () => {
       const status = document.getElementById("geo-status");
       if (!navigator.geolocation) {
@@ -133,20 +158,20 @@
       }
       status.textContent = "📡 現在地を取得中...";
       navigator.geolocation.getCurrentPosition(
-        pos => {
+        (pos) => {
           document.getElementById("latitude").textContent = pos.coords.latitude.toFixed(5);
           document.getElementById("longitude").textContent = pos.coords.longitude.toFixed(5);
           status.textContent = "✅ 現在地を取得しました。";
         },
-        err => {
+        (err) => {
           status.textContent = `❌ エラー: ${err.message}`;
         }
       );
     });
 
-    // ===============================
-    // WebRTC API
-    // ===============================
+    // ======================================
+    // 🎥 WebRTC API
+    // ======================================
     document.getElementById("start-camera").addEventListener("click", async () => {
       const video = document.getElementById("camera");
       const status = document.getElementById("camera-status");
@@ -161,9 +186,9 @@
       }
     });
 
-    // ===============================
-    // sessionStorage API
-    // ===============================
+    // ======================================
+    // 💾 sessionStorage API
+    // ======================================
     document.getElementById("save-storage").addEventListener("click", () => {
       const value = document.getElementById("storage-input").value;
       sessionStorage.setItem("demoText", value);
@@ -174,14 +199,14 @@
       document.getElementById("storage-output").textContent = value;
     });
 
-    // ===============================
-    // WebGPU API + Rendering
-    // ===============================
+    // ======================================
+    // ⚙️ WebGPU API + Rendering
+    // ======================================
     const canvas = document.getElementById("gpuCanvas");
-    const status = document.getElementById("webgpu-status");
+    const gpuStatus = document.getElementById("webgpu-status");
 
     if (!navigator.gpu) {
-      status.textContent = "❌ このブラウザは WebGPU に対応していません。";
+      gpuStatus.textContent = "❌ このブラウザは WebGPU に対応していません。";
     } else {
       const adapter = await navigator.gpu.requestAdapter();
       const device = await adapter.requestDevice();
@@ -190,7 +215,6 @@
       context.configure({ device, format, alphaMode: "premultiplied" });
 
       const vertices = new Float32Array([
-        // X, Y, R, G, B
         -0.5, -0.5, 1, 0, 0,
          0.5, -0.5, 0, 1, 0,
         -0.5,  0.5, 0, 0, 1,
@@ -198,7 +222,7 @@
       ]);
       const vertexBuffer = device.createBuffer({
         size: vertices.byteLength,
-        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
       });
       device.queue.writeBuffer(vertexBuffer, 0, vertices);
 
@@ -207,73 +231,65 @@
           @builtin(position) Position : vec4f,
           @location(0) color : vec3f
         };
-
         @group(0) @binding(0) var<uniform> time : f32;
-
         @vertex
         fn vs_main(@location(0) pos : vec2f, @location(1) color : vec3f) -> Output {
           var out : Output;
-          let angle = time;
-          let rot = mat2x2f(cos(angle), -sin(angle), sin(angle), cos(angle));
+          let rot = mat2x2f(cos(time), -sin(time), sin(time), cos(time));
           out.Position = vec4f(rot * pos, 0.0, 1.0);
           out.color = color;
           return out;
         }
-
         @fragment
         fn fs_main(@location(0) color : vec3f) -> @location(0) vec4f {
           return vec4f(color, 1.0);
         }
       `;
       const shaderModule = device.createShaderModule({ code: shader });
-
       const uniformBuffer = device.createBuffer({
         size: 4,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
       const bindGroupLayout = device.createBindGroupLayout({
-        entries: [{ binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} }]
+        entries: [{ binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} }],
       });
       const bindGroup = device.createBindGroup({
         layout: bindGroupLayout,
-        entries: [{ binding: 0, resource: { buffer: uniformBuffer } }]
+        entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
       });
-
       const pipeline = device.createRenderPipeline({
         layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
         vertex: {
           module: shaderModule,
           entryPoint: "vs_main",
-          buffers: [{
-            arrayStride: 5 * 4,
-            attributes: [
-              { shaderLocation: 0, offset: 0, format: "float32x2" },
-              { shaderLocation: 1, offset: 8, format: "float32x3" }
-            ]
-          }]
+          buffers: [
+            {
+              arrayStride: 5 * 4,
+              attributes: [
+                { shaderLocation: 0, offset: 0, format: "float32x2" },
+                { shaderLocation: 1, offset: 8, format: "float32x3" },
+              ],
+            },
+          ],
         },
-        fragment: {
-          module: shaderModule,
-          entryPoint: "fs_main",
-          targets: [{ format }]
-        },
-        primitive: { topology: "triangle-strip" }
+        fragment: { module: shaderModule, entryPoint: "fs_main", targets: [{ format }] },
+        primitive: { topology: "triangle-strip" },
       });
 
-      // 描画ループ（回転アニメーション）
       let start = performance.now();
       function draw() {
         const now = (performance.now() - start) / 1000;
         device.queue.writeBuffer(uniformBuffer, 0, new Float32Array([now]));
-
         const encoder = device.createCommandEncoder();
         const pass = encoder.beginRenderPass({
-          colorAttachments: [{
-            view: context.getCurrentTexture().createView(),
-            clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1 },
-            loadOp: "clear",
-            storeOp: "store"
-          }]
+          colorAttachments: [
+            {
+              view: context.getCurrentTexture().createView(),
+              clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1 },
+              loadOp: "clear",
+              storeOp: "store",
+            },
+          ],
         });
         pass.setPipeline(pipeline);
         pass.setBindGroup(0, bindGroup);
@@ -283,10 +299,388 @@
         device.queue.submit([encoder.finish()]);
         requestAnimationFrame(draw);
       }
-
       draw();
-      status.textContent = "✅ WebGPU レンダリング実行中（四角形が回転します）";
+      gpuStatus.textContent = "✅ WebGPU レンダリング実行中（四角形が回転）";
     }
+
+    // ======================================
+    // 🔔 Notification API
+    // ======================================
+    const notifyStatus = document.getElementById("notify-status");
+    document.getElementById("request-notify").addEventListener("click", async () => {
+      const permission = await Notification.requestPermission();
+      notifyStatus.textContent = `通知権限: ${permission}`;
+    });
+    document.getElementById("send-notify").addEventListener("click", () => {
+      if (Notification.permission === "granted") {
+        new Notification("🔔 通知テスト", {
+          body: "これは Notification API のテスト通知です。",
+          icon: "https://cdn-icons-png.flaticon.com/512/709/709496.png",
+        });
+      } else {
+        alert("通知を許可してください。");
+      }
+    });
+
+    // ======================================
+    // ⏱️ Performance API
+    // ======================================
+    document.getElementById("check-performance").addEventListener("click", () => {
+      const timing = performance.getEntriesByType("navigation")[0];
+      const perfInfo = `
+📊 Performance Summary
+------------------------------
+ページロード時間: ${timing.loadEventEnd.toFixed(1)} ms
+DOM解析完了: ${timing.domContentLoadedEventEnd.toFixed(1)} ms
+リクエスト開始: ${timing.requestStart.toFixed(1)} ms
+応答終了: ${timing.responseEnd.toFixed(1)} ms
+転送サイズ: ${(performance.memory?.usedJSHeapSize / 1048576).toFixed(2) || "N/A"} MB
+`;
+      document.getElementById("perf-output").textContent = perfInfo;
+    });
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web API + WebGPU + Notification + Performance デモ</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #eef2f7;
+      margin: 30px;
+      color: #333;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      border-left: 6px solid #4caf50;
+      padding-left: 10px;
+      color: #333;
+    }
+    progress {
+      width: 100%;
+      height: 20px;
+    }
+    video {
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+    }
+    canvas {
+      width: 100%;
+      height: 300px;
+      border: 2px solid #4caf50;
+      border-radius: 8px;
+      background: #111;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌐 Web API + WebGPU + Notification + Performance 総合デモ</h1>
+
+  <!-- Battery API -->
+  <section id="battery-section">
+    <h2>🔋 Battery Status API</h2>
+    <p>状態: <span id="battery-status">読み込み中...</span></p>
+    <p>バッテリー残量: <span id="battery-level">--</span>%</p>
+    <p>充電までの時間: <span id="charging-time">--</span></p>
+    <p>放電までの時間: <span id="discharging-time">--</span></p>
+    <progress id="battery-progress" value="0" max="100"></progress>
+  </section>
+
+  <!-- Geolocation API -->
+  <section id="geo-section">
+    <h2>📍 Geolocation API</h2>
+    <button id="get-location">現在地を取得</button>
+    <p>緯度: <span id="latitude">--</span></p>
+    <p>経度: <span id="longitude">--</span></p>
+    <p id="geo-status"></p>
+  </section>
+
+  <!-- WebRTC API -->
+  <section id="webrtc-section">
+    <h2>🎥 WebRTC API (getUserMedia)</h2>
+    <button id="start-camera">カメラを起動</button>
+    <video id="camera" autoplay playsinline></video>
+    <p id="camera-status"></p>
+  </section>
+
+  <!-- sessionStorage API -->
+  <section id="storage-section">
+    <h2>💾 sessionStorage API</h2>
+    <p>
+      <input type="text" id="storage-input" placeholder="保存するテキストを入力" />
+      <button id="save-storage">保存</button>
+      <button id="load-storage">読み込み</button>
+    </p>
+    <p>保存された値: <span id="storage-output">（なし）</span></p>
+  </section>
+
+  <!-- WebGPU API -->
+  <section id="webgpu-section">
+    <h2>⚙️ WebGPU API + レンダリング</h2>
+    <canvas id="gpuCanvas" width="400" height="300"></canvas>
+    <p id="webgpu-status">初期化中...</p>
+  </section>
+
+  <!-- Notification API -->
+  <section id="notification-section">
+    <h2>🔔 Notification API</h2>
+    <button id="request-notify">通知を許可</button>
+    <button id="send-notify">通知を送信</button>
+    <p id="notify-status">未許可</p>
+  </section>
+
+  <!-- Performance API -->
+  <section id="performance-section">
+    <h2>⏱️ Performance API</h2>
+    <button id="check-performance">ページのパフォーマンスを表示</button>
+    <pre id="perf-output" style="background:#222; color:#0f0; padding:10px; border-radius:8px;"></pre>
+  </section>
+
+  <script type="module">
+    // ======================================
+    // 🔋 Battery API
+    // ======================================
+    function formatTime(sec) {
+      if (sec === Infinity || sec < 0) return "―";
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      return h > 0 ? `${h}時間${m}分` : `${m}分`;
+    }
+
+    if ("getBattery" in navigator) {
+      navigator.getBattery().then((battery) => {
+        const s = (id) => document.getElementById(id);
+        function update() {
+          const level = Math.round(battery.level * 100);
+          s("battery-level").textContent = level;
+          s("battery-progress").value = level;
+          s("battery-status").textContent = battery.charging ? "⚡ 充電中" : "🔋 使用中";
+          s("charging-time").textContent = formatTime(battery.chargingTime);
+          s("discharging-time").textContent = formatTime(battery.dischargingTime);
+        }
+        update();
+        ["chargingchange", "levelchange", "chargingtimechange", "dischargingtimechange"].forEach((e) =>
+          battery.addEventListener(e, update)
+        );
+      });
+    } else {
+      document.getElementById("battery-section").innerHTML =
+        "<p class='error'>❌ Battery API はサポートされていません。</p>";
+    }
+
+    // ======================================
+    // 📍 Geolocation API
+    // ======================================
+    document.getElementById("get-location").addEventListener("click", () => {
+      const status = document.getElementById("geo-status");
+      if (!navigator.geolocation) {
+        status.textContent = "❌ Geolocation API はサポートされていません。";
+        return;
+      }
+      status.textContent = "📡 現在地を取得中...";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById("latitude").textContent = pos.coords.latitude.toFixed(5);
+          document.getElementById("longitude").textContent = pos.coords.longitude.toFixed(5);
+          status.textContent = "✅ 現在地を取得しました。";
+        },
+        (err) => {
+          status.textContent = `❌ エラー: ${err.message}`;
+        }
+      );
+    });
+
+    // ======================================
+    // 🎥 WebRTC API
+    // ======================================
+    document.getElementById("start-camera").addEventListener("click", async () => {
+      const video = document.getElementById("camera");
+      const status = document.getElementById("camera-status");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        status.textContent = "✅ カメラを起動しました。";
+        status.className = "success";
+      } catch (err) {
+        status.textContent = "❌ カメラにアクセスできません: " + err.message;
+        status.className = "error";
+      }
+    });
+
+    // ======================================
+    // 💾 sessionStorage API
+    // ======================================
+    document.getElementById("save-storage").addEventListener("click", () => {
+      const value = document.getElementById("storage-input").value;
+      sessionStorage.setItem("demoText", value);
+      document.getElementById("storage-output").textContent = value || "（なし）";
+    });
+    document.getElementById("load-storage").addEventListener("click", () => {
+      const value = sessionStorage.getItem("demoText") || "（なし）";
+      document.getElementById("storage-output").textContent = value;
+    });
+
+    // ======================================
+    // ⚙️ WebGPU API + Rendering
+    // ======================================
+    const canvas = document.getElementById("gpuCanvas");
+    const gpuStatus = document.getElementById("webgpu-status");
+
+    if (!navigator.gpu) {
+      gpuStatus.textContent = "❌ このブラウザは WebGPU に対応していません。";
+    } else {
+      const adapter = await navigator.gpu.requestAdapter();
+      const device = await adapter.requestDevice();
+      const context = canvas.getContext("webgpu");
+      const format = navigator.gpu.getPreferredCanvasFormat();
+      context.configure({ device, format, alphaMode: "premultiplied" });
+
+      const vertices = new Float32Array([
+        -0.5, -0.5, 1, 0, 0,
+         0.5, -0.5, 0, 1, 0,
+        -0.5,  0.5, 0, 0, 1,
+         0.5,  0.5, 1, 1, 0
+      ]);
+      const vertexBuffer = device.createBuffer({
+        size: vertices.byteLength,
+        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+      });
+      device.queue.writeBuffer(vertexBuffer, 0, vertices);
+
+      const shader = `
+        struct Output {
+          @builtin(position) Position : vec4f,
+          @location(0) color : vec3f
+        };
+        @group(0) @binding(0) var<uniform> time : f32;
+        @vertex
+        fn vs_main(@location(0) pos : vec2f, @location(1) color : vec3f) -> Output {
+          var out : Output;
+          let rot = mat2x2f(cos(time), -sin(time), sin(time), cos(time));
+          out.Position = vec4f(rot * pos, 0.0, 1.0);
+          out.color = color;
+          return out;
+        }
+        @fragment
+        fn fs_main(@location(0) color : vec3f) -> @location(0) vec4f {
+          return vec4f(color, 1.0);
+        }
+      `;
+      const shaderModule = device.createShaderModule({ code: shader });
+      const uniformBuffer = device.createBuffer({
+        size: 4,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+      const bindGroupLayout = device.createBindGroupLayout({
+        entries: [{ binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} }],
+      });
+      const bindGroup = device.createBindGroup({
+        layout: bindGroupLayout,
+        entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
+      });
+      const pipeline = device.createRenderPipeline({
+        layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+        vertex: {
+          module: shaderModule,
+          entryPoint: "vs_main",
+          buffers: [
+            {
+              arrayStride: 5 * 4,
+              attributes: [
+                { shaderLocation: 0, offset: 0, format: "float32x2" },
+                { shaderLocation: 1, offset: 8, format: "float32x3" },
+              ],
+            },
+          ],
+        },
+        fragment: { module: shaderModule, entryPoint: "fs_main", targets: [{ format }] },
+        primitive: { topology: "triangle-strip" },
+      });
+
+      let start = performance.now();
+      function draw() {
+        const now = (performance.now() - start) / 1000;
+        device.queue.writeBuffer(uniformBuffer, 0, new Float32Array([now]));
+        const encoder = device.createCommandEncoder();
+        const pass = encoder.beginRenderPass({
+          colorAttachments: [
+            {
+              view: context.getCurrentTexture().createView(),
+              clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1 },
+              loadOp: "clear",
+              storeOp: "store",
+            },
+          ],
+        });
+        pass.setPipeline(pipeline);
+        pass.setBindGroup(0, bindGroup);
+        pass.setVertexBuffer(0, vertexBuffer);
+        pass.draw(4);
+        pass.end();
+        device.queue.submit([encoder.finish()]);
+        requestAnimationFrame(draw);
+      }
+      draw();
+      gpuStatus.textContent = "✅ WebGPU レンダリング実行中（四角形が回転）";
+    }
+
+    // ======================================
+    // 🔔 Notification API
+    // ======================================
+    const notifyStatus = document.getElementById("notify-status");
+    document.getElementById("request-notify").addEventListener("click", async () => {
+      const permission = await Notification.requestPermission();
+      notifyStatus.textContent = `通知権限: ${permission}`;
+    });
+    document.getElementById("send-notify").addEventListener("click", () => {
+      if (Notification.permission === "granted") {
+        new Notification("🔔 通知テスト", {
+          body: "これは Notification API のテスト通知です。",
+          icon: "https://cdn-icons-png.flaticon.com/512/709/709496.png",
+        });
+      } else {
+        alert("通知を許可してください。");
+      }
+    });
+
+    // ======================================
+    // ⏱️ Performance API
+    // ======================================
+    document.getElementById("check-performance").addEventListener("click", () => {
+      const timing = performance.getEntriesByType("navigation")[0];
+      const perfInfo = `
+📊 Performance Summary
+------------------------------
+ページロード時間: ${timing.loadEventEnd.toFixed(1)} ms
+DOM解析完了: ${timing.domContentLoadedEventEnd.toFixed(1)} ms
+リクエスト開始: ${timing.requestStart.toFixed(1)} ms
+応答終了: ${timing.responseEnd.toFixed(1)} ms
+転送サイズ: ${(performance.memory?.usedJSHeapSize / 1048576).toFixed(2) || "N/A"} MB
+`;
+      document.getElementById("perf-output").textContent = perfInfo;
+    });
   </script>
 </body>
 </html>
