@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Battery Status API 全機能チェック</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      padding: 2rem;
+    }
+    #battery-info {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    h1 { color: #0078d7; }
+    .value { font-weight: bold; color: #222; }
+    .charging { color: green; }
+    .discharging { color: red; }
+    .log {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      background: #f0f0f0;
+      padding: 0.8rem;
+      border-radius: 6px;
+      height: 150px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔋 Battery Status API 全機能チェック</h1>
+  <div id="battery-info">バッテリー情報を取得中...</div>
+  <div class="log" id="log"></div>
+
+  <script>
+    function logEvent(msg) {
+      const log = document.getElementById("log");
+      const time = new Date().toLocaleTimeString();
+      log.innerHTML += `[${time}] ${msg}<br>`;
+      log.scrollTop = log.scrollHeight;
+    }
+
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(battery => {
+        const infoDiv = document.getElementById("battery-info");
+
+        function updateBatteryInfo() {
+          const level = Math.round(battery.level * 100);
+          const charging = battery.charging;
+          const chargingTime = battery.chargingTime;
+          const dischargingTime = battery.dischargingTime;
+
+          const chargeState = charging ? "⚡ 充電中" : "🔋 バッテリー使用中";
+          const timeText = `
+            充電完了まで: ${
+              chargingTime === Infinity ? "N/A" : (chargingTime / 60).toFixed(1) + " 分"
+            }<br>
+            残り使用時間: ${
+              dischargingTime === Infinity ? "N/A" : (dischargingTime / 60).toFixed(1) + " 分"
+            }
+          `;
+
+          infoDiv.innerHTML = `
+            <div>状態: <span class="value ${charging ? 'charging' : 'discharging'}">${chargeState}</span></div>
+            <div>バッテリー残量: <span class="value">${level}%</span></div>
+            <div>${timeText}</div>
+          `;
+        }
+
+        // 初回表示
+        updateBatteryInfo();
+
+        // 各イベントを監視
+        battery.addEventListener('chargingchange', () => {
+          logEvent(`充電状態が変化しました → ${battery.charging ? "充電開始" : "放電中"}`);
+          updateBatteryInfo();
+        });
+
+        battery.addEventListener('levelchange', () => {
+          logEvent(`バッテリー残量が変化しました → ${Math.round(battery.level * 100)}%`);
+          updateBatteryInfo();
+        });
+
+        battery.addEventListener('chargingtimechange', () => {
+          logEvent(`充電完了までの時間が変化しました → ${battery.chargingTime}s`);
+          updateBatteryInfo();
+        });
+
+        battery.addEventListener('dischargingtimechange', () => {
+          logEvent(`残り使用時間が変化しました → ${battery.dischargingTime}s`);
+          updateBatteryInfo();
+        });
+
+      }).catch(err => {
+        document.getElementById("battery-info").innerHTML =
+          "⚠️ バッテリー情報の取得に失敗しました。<br>" + err;
+      });
+    } else {
+      document.getElementById("battery-info").innerHTML =
+        "❌ このブラウザは Battery Status API をサポートしていません。";
+    }
+  </script>
+</body>
+</html>
