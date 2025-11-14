@@ -1,4 +1,5 @@
 # NitroCat
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/badges/shields?quickstart=1)\
 ![Static Badge](https://img.shields.io/badge/beta3-NitroCat?style=flat&label=NitroCat&labelColor=red&color=gray&link=https%3A%2F%2Fscratch.mit.edu%2Fusers%2FCat_makura%2F)
 ![Static Badge](https://img.shields.io/badge/Scratch3-mod-gray?style=flat&logo=Scratch&logoColor=yellow&logoSize=10&label=Scartch3&labelColor=blue&link=https%3A%2F%2Fscratch.mit.edu%2F)
 
@@ -7,15 +8,14 @@
 **NitroCat** is [Scratch](https://scratch.mit.edu) mod by **[Cat_makura](https://scratch.mit.edu/users/Cat_makura/)**
 <br>You can use [Scratch](https://scratch.mit.edu) editor and [Turbowarp](https://turbowarp.org) extension(comming soon) in offline
 > [!NOTE]
-> This programm userd HTML,JavaScript(ES),CSS
-> 
+> This programm userd HTML,JavaScript(ES),CSS\
 > ![Static Badge](https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5&logoColor=red)
 > ![Static Badge](https://img.shields.io/badge/Javascript/ES15-lightyellow?style=for-the-badge&logo=javascript&logoColor=yellow)
 > ![Static Badge](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css&logoColor=lightblue)
-> <br>EmurateLibrary:Scratch_VirtureEmurator_Library
-> 
-> ![Static Badge](https://img.shields.io/badge/Scratch__VEL.js-green?style=for-the-badge&logo=javascript&logoColor=white)
->
+> <br>EmurateLibrary:Scratch_VirtureEmurator_Library\
+> ![Static Badge](https://img.shields.io/badge/Scratch__VEL.js-green?style=for-the-badge&logo=javascript&logoColor=white)\
+> Identifier\
+>![Static Badge](https://img.shields.io/badge/Nano--ID-lightgreen?style=for-the-badge&color=%2373ff3c)\
 > Library List
 > 
 > 
