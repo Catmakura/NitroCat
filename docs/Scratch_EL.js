@@ -1,3 +1,3 @@
 function showAlert() {
-alert('ボタンがクリックされました！');
+  alert("ボタンがクリックされました！");
 }
