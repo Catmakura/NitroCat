@@ -36,8 +36,8 @@ z-index: 1;           /* 他の要素より前面に表示:2000 */
   display: flex;                  /* アイコンとテキストを横並び */
   align-items: center;            /* アイコンとテキストを垂直方向で中央揃え */
   transition: opacity 0.3s;       /* 透明度の変化にトランジションを追加 */
-  width: 20px;                    /* アイコンのサイズ */
-  height: 20px;                   /* アイコンのサイズ */
+  width: 32px;
+  height: auto;
   z-index: 2;           /* 他の要素より前面に表示:2 */
 }
 
