@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Mini Scratch</title>
+<style>
+body { display: flex; gap: 20px; font-family: sans-serif; }
+#palette, #script { width: 200px; padding: 10px; border: 2px solid #444; min-height: 300px; }
+.block {
+    background: #4db7ff;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: grab;
+    color: white;
+    border-radius: 8px;
+}
+#run { height: 40px; }
+</style>
+</head>
+<body>
+
+<div>
+    <h3>ブロック</h3>
+    <div id="palette">
+        <div class="block" draggable="true" data-code="move()">10 歩動かす</div>
+        <div class="block" draggable="true" data-code="turn()">15 度回す</div>
+        <div class="block" draggable="true" data-code='say("こんにちは")'>言う「こんにちは」</div>
+    </div>
+</div>
+
+<div>
+    <h3>スクリプト</h3>
+    <div id="script"></div>
+    <button id="run">▶ 実行</button>
+</div>
+
+<div>
+    <h3>キャラクター</h3>
+    <div id="stage" style="width:200px;height:200px;border:1px solid #888;position:relative;">
+        <div id="sprite" style="
+            width:30px;height:30px;background:red;
+            position:absolute;left:80px;top:80px;">
+        </div>
+    </div>
+</div>
+
+<script>
+// ドラッグ
+document.querySelectorAll('.block').forEach(b=>{
+    b.addEventListener('dragstart', e=>{
+        e.dataTransfer.setData("text", e.target.dataset.code);
+    });
+});
+
+// ドロップ
+document.getElementById('script').addEventListener('dragover', e=> e.preventDefault());
+document.getElementById('script').addEventListener('drop', e=>{
+    e.preventDefault();
+    const code = e.dataTransfer.getData("text");
+    const newBlock = document.createElement("div");
+    newBlock.className = "block";
+    newBlock.textContent = code;
+    newBlock.dataset.code = code;
+    document.getElementById("script").appendChild(newBlock);
+});
+
+// キャラクター操作
+let x = 80, y = 80, angle = 0;
+const sprite = document.getElementById("sprite");
+
+function move() {
+    x += 10 * Math.cos(angle * Math.PI / 180);
+    y += 10 * Math.sin(angle * Math.PI / 180);
+    sprite.style.left = x + "px";
+    sprite.style.top = y + "px";
+}
+
+function turn() {
+    angle += 15;
+    sprite.style.transform = `rotate(${angle}deg)`;
+}
+
+function say(msg) {
+    alert(msg);
+}
+
+// 実行ボタン
+document.getElementById('run').onclick = ()=>{
+    const blocks = document.querySelectorAll("#script .block");
+    blocks.forEach(b=>{
+        const c = b.dataset.code;
+        eval(c); // 安全性は低いが最小実装のため使用
+    });
+};
+</script>
+
+</body>
+</html>
