@@ -2,140 +2,66 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Mini Scratch with Menu</title>
+<title>Topbar Example</title>
 <style>
-body { margin:0; font-family: sans-serif; }
-
-/* ==== メニューバー ==== */
-#menubar {
-    background:#333;
-    color:white;
-    display:flex;
-    gap:20px;
-    padding:10px;
-    font-size:14px;
-}
-#menubar div {
-    cursor:pointer;
+/* 画面全体リセット */
+body {
+    margin: 0;
+    font-family: sans-serif;
 }
 
-/* ==== レイアウト ==== */
-#main {
-    display:flex;
-    gap:20px;
-    padding:20px;
+/* 上のバー */
+.topbar {
+    width: 100%;
+    height: 45px;
+    background: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
 }
 
-#palette, #script {
-    width: 200px;
-    padding: 10px;
-    border: 2px solid #444;
-    min-height: 300px;
+/* 背景（中身） */
+.background {
+    margin-top: 60px; /* topbar の分だけ下げる */
+    height: 1000px;
+    background: #eee;
 }
-.block {
-    background: #4db7ff;
-    padding: 10px;
-    margin: 5px 0;
-    cursor: grab;
-    color: white;
-    border-radius: 8px;
-}
-#run { height: 40px; }
 
-#stage {
-    width:200px; height:200px;
-    border:1px solid #888;
-    position:relative;
+/* ボタン */
+.bar-button {
+    position: fixed;
+    top: 5px;
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 200;
 }
-#sprite {
-    width:30px;height:30px;
-    background:red;
-    position:absolute;
-    left:80px; top:80px;
+.bar-button img {
+    width: 100%;
+    height: 100%;
 }
 </style>
 </head>
 <body>
 
-<!-- === メニューバー === -->
-<div id="menubar">
-    <div onclick="alert('新規ファイル')">ファイル</div>
-    <div onclick="alert('編集メニュー')">編集</div>
-    <div onclick="alert('実行メニュー')">実行</div>
-    <div onclick="alert('ヘルプメニュー')">ヘルプ</div>
+<div class="topbar"></div>
+
+<div class="background">
+    ここに内容が入ります
 </div>
 
-<!-- === メイン画面 === -->
-<div id="main">
-    <div>
-        <h3>ブロック</h3>
-        <div id="palette">
-            <div class="block" draggable="true" data-code="move()">10 歩動かす</div>
-            <div class="block" draggable="true" data-code="turn()">15 度回す</div>
-            <div class="block" draggable="true" data-code='say("こんにちは")'>言う「こんにちは」</div>
-        </div>
-    </div>
-
-    <div>
-        <h3>スクリプト</h3>
-        <div id="script"></div>
-        <button id="run">▶ 実行</button>
-    </div>
-
-    <div>
-        <h3>キャラクター</h3>
-        <div id="stage">
-            <div id="sprite"></div>
-        </div>
-    </div>
-</div>
+<button type="button" class="bar-button" onclick="showAlert()">
+  <img src="icon.png" alt="icon">
+</button>
 
 <script>
-// ==== ドラッグ処理 ====
-document.querySelectorAll('.block').forEach(b=>{
-    b.addEventListener('dragstart', e=>{
-        e.dataTransfer.setData("text", e.target.dataset.code);
-    });
-});
-
-document.getElementById('script').addEventListener('dragover', e=> e.preventDefault());
-document.getElementById('script').addEventListener('drop', e=>{
-    e.preventDefault();
-    const code = e.dataTransfer.getData("text");
-    const newBlock = document.createElement("div");
-    newBlock.className = "block";
-    newBlock.textContent = code;
-    newBlock.dataset.code = code;
-    document.getElementById("script").appendChild(newBlock);
-});
-
-// ==== スプライト制御 ====
-let x = 80, y = 80, angle = 0;
-const sprite = document.getElementById("sprite");
-
-function move() {
-    x += 10 * Math.cos(angle * Math.PI / 180);
-    y += 10 * Math.sin(angle * Math.PI / 180);
-    sprite.style.left = x + "px";
-    sprite.style.top = y + "px";
+function showAlert() {
+    alert("ボタンがクリックされました！");
 }
-
-function turn() {
-    angle += 15;
-    sprite.style.transform = `rotate(${angle}deg)`;
-}
-
-function say(msg) {
-    alert(msg);
-}
-
-// ==== 実行ボタン ====
-document.getElementById('run').onclick = ()=>{
-    const blocks = document.querySelectorAll("#script .block");
-    blocks.forEach(b=>{
-        eval(b.dataset.code); // 簡易実装のため eval 使用
-    });
-};
 </script>
 
 </body>
